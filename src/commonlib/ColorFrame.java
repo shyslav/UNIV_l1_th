@@ -37,16 +37,8 @@ public class ColorFrame  extends ArrayList<ColorFrame>{
         return color;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     public String getANSI_COLOR() {
         return ANSI_COLOR;
-    }
-
-    public void setANSI_COLOR(String ANSI_COLOR) {
-        this.ANSI_COLOR = ANSI_COLOR;
     }
 
     public String getAnsiReset() {
