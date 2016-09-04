@@ -27,6 +27,7 @@ public class ColorFrame  extends ArrayList<ColorFrame>{
         super.add(new ColorFrame(Color.BLUE,ANSI_BLUE));
         super.add(new ColorFrame(Color.PURPLE,ANSI_PURPLE));
         super.add(new ColorFrame(Color.CYAN, ANSI_CYAN));
+        super.add(new ColorFrame(Color.BLACK,ANSI_BLACK));
     }
     private ColorFrame(Color color, String ANSI_COLOR) {
         this.color = color;
