@@ -1,9 +1,8 @@
-package sample;
+package commonlib;
 
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by shyslav on 9/4/16.
