@@ -6,28 +6,25 @@ import javafx.scene.paint.*;
  * Created by shyslav on 9/3/16.
  */
 public class Ball extends Circle{
+    private int BallId;
     private static double ballRadius = 15;
-    private final int lifeTime = 60;
     private int deltaX = 3;
     private int deltaY = 3;
-    private long startTime;
-    private int sleepTime;
-    public Ball(Color fill) {
+    private int amountMove;
+    private String ansiColor;
+    public Ball(Color fill, int id, String ansiColor) {
         super(ballRadius, fill);
-        this.startTime = System.currentTimeMillis();
-        this.sleepTime = 15;
+        amountMove = 0;
+        this.BallId = id;
+        this.ansiColor = ansiColor;
     }
 
-    public long increaseSleepTime() {
-        if(System.currentTimeMillis() - startTime >10000){
-            startTime = System.currentTimeMillis();
-            sleepTime++;
-        }
-        return sleepTime;
+    public int getAmountMove() {
+        return amountMove;
     }
 
-    public int getSleepTime() {
-        return sleepTime;
+    public void increaseAmountMove() {
+        this.amountMove++;
     }
 
     public int getDeltaX() {
@@ -44,5 +41,13 @@ public class Ball extends Circle{
 
     public void setDeltaY(int deltaY) {
         this.deltaY = deltaY;
+    }
+
+    public int getBallId() {
+        return BallId;
+    }
+
+    public void setBallId(int ballId) {
+        BallId = ballId;
     }
 }
