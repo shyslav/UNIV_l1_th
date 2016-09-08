@@ -1,4 +1,4 @@
-package sample;
+package lab1.sample;
 
 import commonlib.ColorFrame;
 import javafx.geometry.Bounds;

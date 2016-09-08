@@ -1,4 +1,4 @@
-package sample;
+package lab1.sample;
 
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.*;

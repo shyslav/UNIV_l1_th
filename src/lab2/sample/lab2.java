@@ -1,4 +1,4 @@
-package sample;
+package lab2.sample;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
-public class Main extends Application {
+public class lab2 extends Application {
     private BallPane root;
 
     @Override
