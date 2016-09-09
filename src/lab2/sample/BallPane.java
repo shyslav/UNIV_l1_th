@@ -18,11 +18,9 @@ public class BallPane extends Pane {
     private volatile static ArrayList<Ball> ballArray;
     private long startTime;
     private Bounds bounds;
-    private Thread moveThread;
-    private int currentDelay = 15;
-    private boolean game = true;
     private int ballID = 1;
     private Rectangle[] rectangle = new Rectangle[4];
+    private ArrayList<Thread> threadsList = new ArrayList<>();
 
     public BallPane() throws IOException {
         ballArray = new ArrayList<>();
@@ -55,53 +53,43 @@ public class BallPane extends Pane {
     /**
      * Start ball move thread
      */
-    public void startBallMoving() {
+    public void initializePaneAfterStart() {
         bounds = super.getBoundsInLocal();
         initializeRectangles();
-        moveThread = new Thread(() -> {
-            while (game) {
-                try {
-                    Thread.sleep(getTime());
-                } catch (InterruptedException e) {
-                    System.out.println(e);
-                }
-                for (int i = 0; i < ballArray.size(); i++) {
-                    Ball bal = ballArray.get(i);
-                    move(bal);
-                    bal.increaseAmountMove();
-                }
-            }
-        });
-        moveThread.start();
     }
 
-    /**
-     * Get time to slow balls
-     *
-     * @return time
-     */
-    public int getTime() {
-        if (System.currentTimeMillis() - startTime > 60000) {
-            startTime = System.currentTimeMillis();
-            currentDelay += 15;
-            return currentDelay;
-        }
-        return currentDelay;
-    }
 
     /**
      * Add ball to pane
      */
     public void addBallToPane() {
-        if (ballID <= colorFrame.size()) {
+        Thread thread = new Thread(() -> {
             Ball ball = new Ball(colorFrame.get(ballID - 1).getColor(),
                     ballID,
                     colorFrame.get(ballID - 1).getANSI_COLOR());
             ballID++;
             ball.relocate(400, 400);
-            ballArray.add(ball);
-            this.getChildren().addAll(ball);
-        }
+            platformAddBall(ball);
+            while (ball.isGame()) {
+                try {
+                    Thread.sleep(ball.getTime());
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                }
+                move(ball);
+                ball.increaseAmountMove();
+            }
+        });
+        thread.start();
+    }
+
+    /**
+     * Add ball to platform
+     * @param ball
+     */
+    private void platformAddBall(Ball ball) {
+        Platform.runLater(() ->
+                this.getChildren().add(ball));
     }
 
     /**
@@ -131,6 +119,7 @@ public class BallPane extends Pane {
 
     /**
      * Check if ball recapture in box
+     *
      * @param ball
      */
     private void rectangleRecapture(Ball ball) {
@@ -146,12 +135,14 @@ public class BallPane extends Pane {
 
     /**
      * remove ball from pane
+     *
      * @param ball ball to remove
      */
     private void removeBall(Ball ball) {
         this.getChildren().remove(ball);
         ballArray.remove(ball);
     }
+
     /**
      * Move ball
      *
@@ -195,8 +186,8 @@ public class BallPane extends Pane {
      *
      * @return result of thread live
      */
-    public boolean isAlive() {
-        return moveThread.isAlive();
+    public boolean isAlive(int id) {
+        return threadsList.get(id).isAlive();
     }
 
     /**
@@ -204,8 +195,8 @@ public class BallPane extends Pane {
      *
      * @param game command to work or not
      */
-    public void setGame(boolean game) {
-        this.game = game;
+    public void setGame(Ball game) {
+        game.setGame(false);
     }
 
 }

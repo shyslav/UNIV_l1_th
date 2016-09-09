@@ -20,7 +20,7 @@ public class lab2 extends Application {
         primaryStage.setOnCloseRequest(WindowEvent -> System.exit(0));
 
         root.addBallToPane();
-        root.startBallMoving();
+        root.initializePaneAfterStart();
     }
 
     private Scene initializeScene() throws IOException {
@@ -32,10 +32,9 @@ public class lab2 extends Application {
                 root.addBallToPane();
             }
             if (event.getCode() == KeyCode.ESCAPE) {
-                if (!root.isAlive()) {
+                if (!root.isAlive(0)) {
                     System.exit(0);
                 }
-                root.setGame(false);
                 root.printBallMove();
             }
         });

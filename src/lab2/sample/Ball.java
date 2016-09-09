@@ -13,11 +13,24 @@ public class Ball extends Circle{
     private int deltaY = 3;
     private int amountMove;
     private String ansiColor;
+    private boolean game = true;
+    private int speed;
+    private long startTime;
     public Ball(Color fill, int id, String ansiColor) {
         super(ballRadius, fill);
         amountMove = 0;
         this.BallId = id;
         this.ansiColor = ansiColor;
+        this.speed = 15;
+        this.startTime = System.currentTimeMillis();
+    }
+
+    public boolean isGame() {
+        return game;
+    }
+
+    public void setGame(boolean game) {
+        this.game = game;
     }
 
     public int getAmountMove() {
@@ -50,5 +63,19 @@ public class Ball extends Circle{
 
     public void setBallId(int ballId) {
         BallId = ballId;
+    }
+
+    /**
+     * Get time to slow balls
+     *
+     * @return time
+     */
+    public int getTime() {
+        if (System.currentTimeMillis() - startTime > 60000) {
+            startTime = System.currentTimeMillis();
+            speed += 15;
+            return speed;
+        }
+        return speed;
     }
 }
