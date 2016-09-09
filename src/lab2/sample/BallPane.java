@@ -38,21 +38,15 @@ public class BallPane extends BorderPane {
 
         Button btnBLUE = new Button("ADD BLUE");
         btnBLUE.setPrefSize(100, 20);
-        btnBLUE.setOnMouseClicked((e)->{
-            addBallToPane(Color.BLUE);
-        });
+        btnBLUE.setOnMouseClicked((e)-> addBallToPane(Color.BLUE));
 
         Button btnRED = new Button("ADD RED");
         btnRED.setPrefSize(100, 20);
-        btnRED.setOnMouseClicked((e)->{
-            addBallToPane(Color.RED);
-        });
+        btnRED.setOnMouseClicked((e)-> addBallToPane(Color.RED));
 
-        Button btnBLACK = new Button("ADD RED");
+        Button btnBLACK = new Button("ADD Black");
         btnBLACK.setPrefSize(100, 20);
-        btnBLACK.setOnMouseClicked((e)->{
-            addBallToPane(Color.BLACK);
-        });
+        btnBLACK.setOnMouseClicked((e)-> addBallToPane(Color.BLACK));
 
         hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK);
 
@@ -69,9 +63,9 @@ public class BallPane extends BorderPane {
         //top right
         rectangle[3] = new Rectangle(100, 100, Color.RED);
 
-        for (int i = 0; i < rectangle.length; i++) {
-            rectangle[i].setArcHeight(100);
-            rectangle[i].setArcWidth(100);
+        for (Rectangle aRectangle : rectangle) {
+            aRectangle.setArcHeight(100);
+            aRectangle.setArcWidth(100);
         }
         int padding = 25;
         rectangle[0].relocate(0 - padding, bounds.getMaxY() - rectangle[0].getHeight() + padding);
@@ -130,7 +124,7 @@ public class BallPane extends BorderPane {
     /**
      * Add ball to platform
      *
-     * @param ball
+     * @param ball current ball
      */
     private void platformAddBall(Ball ball) {
         Platform.runLater(() ->
@@ -153,31 +147,34 @@ public class BallPane extends BorderPane {
     /**
      * Action to check if ball collided
      */
-    private void recapture(Ball ball) {
-        for (int i = 0; i < ballArray.size(); i++) {
-            if (ball != ballArray.get(i) &&
-                    ball.getBoundsInParent().intersects(ballArray.get(i).getBoundsInParent()) &&
-                    ballArray.get(i).isGame()) {
-                rotate(ball, ballArray.get(i));
+    private boolean recapture(Ball ball) {
+        for (Ball aBallArray : ballArray) {
+            if (ball != aBallArray &&
+                    ball.getBoundsInParent().intersects(aBallArray.getBoundsInParent()) &&
+                    aBallArray.isGame()) {
+                rotate(ball, aBallArray);
+                return true;
             }
         }
+        return false;
     }
 
     /**
      * Check if ball recapture in box
      *
-     * @param ball
+     * @param ball - current ball
      */
-    private void rectangleRecapture(Ball ball) {
-        for (int i = 0; i < rectangle.length; i++) {
-            if (ball.getBoundsInParent().intersects(rectangle[i].getBoundsInParent())) {
+    private boolean rectangleRecapture(Ball ball) {
+        for (Rectangle aRectangle : rectangle) {
+            if (ball.getBoundsInParent().intersects(aRectangle.getBoundsInParent())) {
                 Platform.runLater(() -> {
                     System.out.println("recapture with rectangle");
                     removeBall(ball);
                 });
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -196,8 +193,9 @@ public class BallPane extends BorderPane {
      * @param bal ball to move
      */
     private void move(Ball bal) {
-        rectangleRecapture(bal);
-        recapture(bal);
+        if(rectangleRecapture(bal) || recapture(bal)){
+          return;
+        }
 
         bal.setLayoutX(bal.getLayoutX() + bal.getDeltaX());
         bal.setLayoutY(bal.getLayoutY() + bal.getDeltaY());
