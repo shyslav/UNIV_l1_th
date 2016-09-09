@@ -3,6 +3,10 @@ package lab2.sample;
 import commonlib.ColorFrame;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -13,14 +17,46 @@ import java.util.ArrayList;
 /**
  * Created by shyslav on 9/4/16.
  */
-public class BallPane extends Pane {
+public class BallPane extends BorderPane {
     private volatile static ArrayList<Ball> ballArray;
     private Bounds bounds;
     private Rectangle[] rectangle = new Rectangle[4];
-    private ArrayList<Thread> threadsList = new ArrayList<>();
+    private Pane pane;
 
     public BallPane() throws IOException {
+        pane = new Pane();
+        this.setCenter(pane);
+        this.setBottom(addHBox());
         ballArray = new ArrayList<>();
+    }
+
+    public HBox addHBox() {
+        HBox hbox = new HBox();
+        hbox.setPadding(new Insets(15, 12, 15, 12));
+        hbox.setSpacing(10);
+        hbox.setStyle("-fx-background-color: #336699;");
+
+        Button btnBLUE = new Button("ADD BLUE");
+        btnBLUE.setPrefSize(100, 20);
+        btnBLUE.setOnMouseClicked((e)->{
+            addBallToPane(Color.BLUE);
+        });
+
+        Button btnRED = new Button("ADD RED");
+        btnRED.setPrefSize(100, 20);
+        btnRED.setOnMouseClicked((e)->{
+            addBallToPane(Color.RED);
+        });
+
+        Button btnBLACK = new Button("ADD RED");
+        btnBLACK.setPrefSize(100, 20);
+        btnBLACK.setOnMouseClicked((e)->{
+            addBallToPane(Color.BLACK);
+        });
+
+        hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK);
+
+        return hbox;
     }
 
     private void initializeRectangles() {
@@ -37,20 +73,20 @@ public class BallPane extends Pane {
             rectangle[i].setArcHeight(100);
             rectangle[i].setArcWidth(100);
         }
+        int padding = 25;
+        rectangle[0].relocate(0 - padding, bounds.getMaxY() - rectangle[0].getHeight() + padding);
+        rectangle[1].relocate(bounds.getMaxX() - rectangle[1].getWidth() + padding, bounds.getMaxY() - rectangle[1].getHeight() + padding);
+        rectangle[2].relocate(0 - padding, 0 - padding);
+        rectangle[3].relocate(bounds.getMaxX() - rectangle[3].getWidth() + padding, 0 - padding);
 
-        rectangle[0].relocate(0 - 25, bounds.getMaxY() - rectangle[0].getHeight() + 25);
-        rectangle[1].relocate(bounds.getMaxX() - rectangle[1].getWidth() + 25, bounds.getMaxY() - rectangle[1].getHeight() + 25);
-        rectangle[2].relocate(0 - 25, 0 - 25);
-        rectangle[3].relocate(bounds.getMaxX() - rectangle[3].getWidth() + 25, 0 - 25);
-
-        this.getChildren().addAll(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
+        pane.getChildren().addAll(rectangle[0], rectangle[1], rectangle[2], rectangle[3]);
     }
 
     /**
      * Start ball move thread
      */
     public void initializePaneAfterStart() {
-        bounds = super.getBoundsInLocal();
+        bounds = pane.getBoundsInLocal();
         initializeRectangles();
     }
 
@@ -85,7 +121,7 @@ public class BallPane extends Pane {
                 ball.increaseAmountMove();
             }
         });
-        if(color == Color.RED){
+        if (color == Color.RED) {
             thread.setPriority(6);
         }
         thread.start();
@@ -98,7 +134,7 @@ public class BallPane extends Pane {
      */
     private void platformAddBall(Ball ball) {
         Platform.runLater(() ->
-                this.getChildren().add(ball));
+                pane.getChildren().add(ball));
     }
 
     /**
@@ -117,11 +153,12 @@ public class BallPane extends Pane {
     /**
      * Action to check if ball collided
      */
-    private void recapture() {
+    private void recapture(Ball ball) {
         for (int i = 0; i < ballArray.size(); i++) {
-            if (i + 1 < ballArray.size() &&
-                    ballArray.get(i).getBoundsInParent().intersects(ballArray.get(i + 1).getBoundsInParent())) {
-                rotate(ballArray.get(i), ballArray.get(i + 1));
+            if (ball != ballArray.get(i) &&
+                    ball.getBoundsInParent().intersects(ballArray.get(i).getBoundsInParent()) &&
+                    ballArray.get(i).isGame()) {
+                rotate(ball, ballArray.get(i));
             }
         }
     }
@@ -150,7 +187,7 @@ public class BallPane extends Pane {
      */
     private void removeBall(Ball ball) {
         ball.setGame(false);
-        this.getChildren().remove(ball);
+        pane.getChildren().remove(ball);
     }
 
     /**
@@ -160,7 +197,7 @@ public class BallPane extends Pane {
      */
     private void move(Ball bal) {
         rectangleRecapture(bal);
-        recapture();
+        recapture(bal);
 
         bal.setLayoutX(bal.getLayoutX() + bal.getDeltaX());
         bal.setLayoutY(bal.getLayoutY() + bal.getDeltaY());
@@ -190,23 +227,4 @@ public class BallPane extends Pane {
         b2.setDeltaX(b2.getDeltaX() * -1);
         b2.setDeltaY(b2.getDeltaY() * -1);
     }
-
-    /**
-     * Check if move thread live
-     *
-     * @return result of thread live
-     */
-    public boolean isAlive(int id) {
-        return threadsList.get(id).isAlive();
-    }
-
-    /**
-     * Command stop thread
-     *
-     * @param game command to work or not
-     */
-    public void setGame(Ball game) {
-        game.setGame(false);
-    }
-
 }
