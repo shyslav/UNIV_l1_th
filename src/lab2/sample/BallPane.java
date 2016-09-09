@@ -38,15 +38,15 @@ public class BallPane extends BorderPane {
 
         Button btnBLUE = new Button("ADD BLUE");
         btnBLUE.setPrefSize(100, 20);
-        btnBLUE.setOnMouseClicked((e)-> addBallToPane(Color.BLUE));
+        btnBLUE.setOnMouseClicked((e) -> addBallToPane(Color.BLUE));
 
         Button btnRED = new Button("ADD RED");
         btnRED.setPrefSize(100, 20);
-        btnRED.setOnMouseClicked((e)-> addBallToPane(Color.RED));
+        btnRED.setOnMouseClicked((e) -> addBallToPane(Color.RED));
 
         Button btnBLACK = new Button("ADD Black");
         btnBLACK.setPrefSize(100, 20);
-        btnBLACK.setOnMouseClicked((e)-> addBallToPane(Color.BLACK));
+        btnBLACK.setOnMouseClicked((e) -> addBallToPane(Color.BLACK));
 
         hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK);
 
@@ -101,7 +101,6 @@ public class BallPane extends BorderPane {
             Ball ball = new Ball(color,
                     ballArray.size(),
                     ansi);
-            ballArray.add(ball);
             ball.relocate(400, 400);
             platformAddBall(ball);
             while (ball.isGame()) {
@@ -112,7 +111,6 @@ public class BallPane extends BorderPane {
                 }
                 System.out.println("Move - " + ball.getBallId());
                 move(ball);
-                ball.increaseAmountMove();
             }
         });
         if (color == Color.RED) {
@@ -127,8 +125,11 @@ public class BallPane extends BorderPane {
      * @param ball current ball
      */
     private void platformAddBall(Ball ball) {
-        Platform.runLater(() ->
-                pane.getChildren().add(ball));
+        Platform.runLater(() -> {
+                    pane.getChildren().add(ball);
+                    ballArray.add(ball);
+                }
+        );
     }
 
     /**
@@ -193,8 +194,8 @@ public class BallPane extends BorderPane {
      * @param bal ball to move
      */
     private void move(Ball bal) {
-        if(rectangleRecapture(bal) || recapture(bal)){
-          return;
+        if (rectangleRecapture(bal) || recapture(bal)) {
+            return;
         }
 
         bal.setLayoutX(bal.getLayoutX() + bal.getDeltaX());
@@ -211,6 +212,8 @@ public class BallPane extends BorderPane {
         if (atBottomBorder || atTopBorder) {
             bal.setDeltaY(bal.getDeltaY() * -1);
         }
+
+        bal.increaseAmountMove();
     }
 
     /**
