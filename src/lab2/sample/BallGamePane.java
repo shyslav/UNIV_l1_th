@@ -115,7 +115,7 @@ public class BallGamePane extends Pane {
     /**
      * Action to check if ball collided
      */
-    private boolean recapture(Ball ball) {
+    synchronized private boolean recapture(Ball ball) {
         for (Ball aBallArray : ballArray) {
             if (ball != aBallArray &&
                     ball.getBoundsInParent().intersects(aBallArray.getBoundsInParent()) &&
@@ -132,7 +132,7 @@ public class BallGamePane extends Pane {
      *
      * @param ball - current ball
      */
-    private boolean rectangleRecapture(Ball ball) {
+    synchronized private boolean rectangleRecapture(Ball ball) {
         for (Rectangle aRectangle : rectangle) {
             if (ball.getBoundsInParent().intersects(aRectangle.getBoundsInParent())) {
                 Platform.runLater(() -> {
