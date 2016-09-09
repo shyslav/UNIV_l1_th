@@ -22,7 +22,7 @@ public class lab2 extends Application {
         primaryStage.setOnCloseRequest(WindowEvent -> System.exit(0));
         Platform.runLater(()->
         {
-            root.addBallToPane(Color.BLACK);
+            root.addBallToPane(Color.BLACK,0,0);
             root.initializePaneAfterStart();
         });
     }
@@ -33,18 +33,21 @@ public class lab2 extends Application {
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.R) {
-                root.addBallToPane(Color.RED);
+                root.addBallToPane(Color.RED,0,0);
             }
             if (event.getCode() == KeyCode.B) {
-                root.addBallToPane(Color.BLUE);
+                root.addBallToPane(Color.BLUE,0,0);
             }
             if (event.getCode() == KeyCode.C) {
-                root.addBallToPane(Color.BLACK);
+                root.addBallToPane(Color.BLACK,0,0);
             }
             if (event.getCode() == KeyCode.ESCAPE) {
                 root.printBallMove();
                 System.exit(0);
             }
+        });
+        scene.setOnMouseClicked(event -> {
+            root.addBallToPane(Color.BLACK,(int) event.getSceneX(),(int) event.getSceneY());
         });
         return scene;
     }

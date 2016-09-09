@@ -50,15 +50,15 @@ public class BallPane extends BorderPane {
 
         Button btnBLUE = new Button("ADD BLUE");
         btnBLUE.setPrefSize(100, 20);
-        btnBLUE.setOnMouseClicked((e) -> addBallToPane(Color.BLUE));
+        btnBLUE.setOnMouseClicked((e) -> addBallToPane(Color.BLUE,0,0));
 
         Button btnRED = new Button("ADD RED");
         btnRED.setPrefSize(100, 20);
-        btnRED.setOnMouseClicked((e) -> addBallToPane(Color.RED));
+        btnRED.setOnMouseClicked((e) -> addBallToPane(Color.RED,0,0));
 
         Button btnBLACK = new Button("ADD Black");
         btnBLACK.setPrefSize(100, 20);
-        btnBLACK.setOnMouseClicked((e) -> addBallToPane(Color.BLACK));
+        btnBLACK.setOnMouseClicked((e) -> addBallToPane(Color.BLACK,0,0));
 
         hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK, labelScore);
 
@@ -100,7 +100,7 @@ public class BallPane extends BorderPane {
     /**
      * Add ball to pane
      */
-    public void addBallToPane(Color color) {
+    public void addBallToPane(Color color,int x, int y) {
         String ansi;
         if (color == Color.BLUE) {
             ansi = ColorFrame.getAnsiBlue();
@@ -113,7 +113,11 @@ public class BallPane extends BorderPane {
             Ball ball = new Ball(color,
                     ballArray.size(),
                     ansi);
-            ball.relocate(random.nextInt((int) bounds.getWidth()-200)+100, random.nextInt((int) bounds.getHeight()-200)+100);
+            if(x == 0 && y == 0) {
+                ball.relocate(random.nextInt((int) bounds.getWidth() - 200) + 100, random.nextInt((int) bounds.getHeight() - 200) + 100);
+            }else {
+                ball.relocate(x,y);
+            }
             platformAddBall(ball);
             while (ball.isGame()) {
                 move(ball);
