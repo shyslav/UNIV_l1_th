@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by shyslav on 9/4/16.
@@ -25,19 +26,20 @@ public class BallPane extends BorderPane {
     private Pane pane;
     private Label labelScore;
     private int score;
+    private final Random random = new Random();
 
     public BallPane() throws IOException {
         pane = new Pane();
         this.labelScore = new Label("You score: " + 0);
-        labelScore.setPadding(new Insets(5,5,5,5));
+        labelScore.setPadding(new Insets(5, 5, 5, 5));
         labelScore.setTextFill(Color.web("#FFF6FE"));
         this.setCenter(pane);
         this.setBottom(addHBox());
         ballArray = new ArrayList<>();
     }
 
-    private void increaseScore(){
-            labelScore.setText("You score: " + (++score));
+    private void increaseScore() {
+        labelScore.setText("You score: " + (++score));
     }
 
     public HBox addHBox() {
@@ -58,7 +60,7 @@ public class BallPane extends BorderPane {
         btnBLACK.setPrefSize(100, 20);
         btnBLACK.setOnMouseClicked((e) -> addBallToPane(Color.BLACK));
 
-        hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK,labelScore);
+        hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK, labelScore);
 
         return hbox;
     }
@@ -111,7 +113,7 @@ public class BallPane extends BorderPane {
             Ball ball = new Ball(color,
                     ballArray.size(),
                     ansi);
-            ball.relocate(400, 400);
+            ball.relocate(random.nextInt((int) bounds.getWidth()-200)+100, random.nextInt((int) bounds.getHeight()-200)+100);
             platformAddBall(ball);
             while (ball.isGame()) {
                 move(ball);
@@ -136,7 +138,7 @@ public class BallPane extends BorderPane {
     private void platformAddBall(Ball ball) {
         Platform.runLater(() -> {
                     pane.getChildren().add(ball);
-                        ballArray.add(ball);
+                    ballArray.add(ball);
                 }
         );
     }
@@ -204,10 +206,10 @@ public class BallPane extends BorderPane {
      * @param bal ball to move
      */
     synchronized private void move(Ball bal) {
-        if (rectangleRecapture(bal) || recapture(bal)) {
+        if (rectangleRecapture(bal)) {
             return;
         }
-
+        recapture(bal);
         bal.setLayoutX(bal.getLayoutX() + bal.getDeltaX());
         bal.setLayoutY(bal.getLayoutY() + bal.getDeltaY());
 
