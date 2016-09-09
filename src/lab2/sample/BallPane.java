@@ -127,7 +127,7 @@ public class BallPane extends BorderPane {
     private void platformAddBall(Ball ball) {
         Platform.runLater(() -> {
                     pane.getChildren().add(ball);
-                    ballArray.add(ball);
+                        ballArray.add(ball);
                 }
         );
     }
@@ -193,7 +193,7 @@ public class BallPane extends BorderPane {
      *
      * @param bal ball to move
      */
-    private void move(Ball bal) {
+    synchronized private void move(Ball bal) {
         if (rectangleRecapture(bal) || recapture(bal)) {
             return;
         }
