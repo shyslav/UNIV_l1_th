@@ -1,6 +1,7 @@
 package lab2.sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -19,9 +20,11 @@ public class lab2 extends Application {
         primaryStage.setScene(initializeScene());
         primaryStage.show();
         primaryStage.setOnCloseRequest(WindowEvent -> System.exit(0));
-
-        root.addBallToPane(Color.BLACK);
-        root.initializePaneAfterStart();
+        Platform.runLater(()->
+        {
+            root.addBallToPane(Color.BLACK);
+            root.initializePaneAfterStart();
+        });
     }
 
     private Scene initializeScene() throws IOException {

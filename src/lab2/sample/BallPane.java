@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -22,12 +23,21 @@ public class BallPane extends BorderPane {
     private Bounds bounds;
     private Rectangle[] rectangle = new Rectangle[4];
     private Pane pane;
+    private Label labelScore;
+    private int score;
 
     public BallPane() throws IOException {
         pane = new Pane();
+        this.labelScore = new Label("You score: " + 0);
+        labelScore.setPadding(new Insets(5,5,5,5));
+        labelScore.setTextFill(Color.web("#FFF6FE"));
         this.setCenter(pane);
         this.setBottom(addHBox());
         ballArray = new ArrayList<>();
+    }
+
+    private void increaseScore(){
+            labelScore.setText("You score: " + (++score));
     }
 
     public HBox addHBox() {
@@ -48,7 +58,7 @@ public class BallPane extends BorderPane {
         btnBLACK.setPrefSize(100, 20);
         btnBLACK.setOnMouseClicked((e) -> addBallToPane(Color.BLACK));
 
-        hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK);
+        hbox.getChildren().addAll(btnBLUE, btnRED, btnBLACK,labelScore);
 
         return hbox;
     }
@@ -104,13 +114,12 @@ public class BallPane extends BorderPane {
             ball.relocate(400, 400);
             platformAddBall(ball);
             while (ball.isGame()) {
+                move(ball);
                 try {
                     Thread.sleep(ball.getTime());
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
-                System.out.println("Move - " + ball.getBallId());
-                move(ball);
             }
         });
         if (color == Color.RED) {
@@ -169,6 +178,7 @@ public class BallPane extends BorderPane {
         for (Rectangle aRectangle : rectangle) {
             if (ball.getBoundsInParent().intersects(aRectangle.getBoundsInParent())) {
                 Platform.runLater(() -> {
+                    increaseScore();
                     System.out.println("recapture with rectangle");
                     removeBall(ball);
                 });
