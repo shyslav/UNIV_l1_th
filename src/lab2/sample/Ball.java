@@ -12,10 +12,10 @@ public class Ball extends Circle{
     private int deltaX = 3;
     private int deltaY = 3;
     private int amountMove;
-    private String ansiColor;
     private boolean game = true;
     private int speed;
     private long startTime;
+    private String ansiColor;
     public Ball(Color fill, int id, String ansiColor) {
         super(ballRadius, fill);
         amountMove = 0;
@@ -63,6 +63,10 @@ public class Ball extends Circle{
 
     public void setBallId(int ballId) {
         BallId = ballId;
+    }
+
+    public String getAnsiColor() {
+        return ansiColor;
     }
 
     /**

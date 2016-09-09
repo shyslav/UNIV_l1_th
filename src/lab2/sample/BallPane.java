@@ -14,17 +14,13 @@ import java.util.ArrayList;
  * Created by shyslav on 9/4/16.
  */
 public class BallPane extends Pane {
-    private final ColorFrame colorFrame = new ColorFrame();
     private volatile static ArrayList<Ball> ballArray;
-    private long startTime;
     private Bounds bounds;
-    private int ballID = 1;
     private Rectangle[] rectangle = new Rectangle[4];
     private ArrayList<Thread> threadsList = new ArrayList<>();
 
     public BallPane() throws IOException {
         ballArray = new ArrayList<>();
-        startTime = System.currentTimeMillis();
     }
 
     private void initializeRectangles() {
@@ -62,12 +58,20 @@ public class BallPane extends Pane {
     /**
      * Add ball to pane
      */
-    public void addBallToPane() {
+    public void addBallToPane(Color color) {
+        String ansi;
+        if (color == Color.BLUE) {
+            ansi = ColorFrame.getAnsiBlue();
+        } else if (color == Color.RED) {
+            ansi = ColorFrame.getAnsiRed();
+        } else {
+            ansi = ColorFrame.getAnsiBlack();
+        }
         Thread thread = new Thread(() -> {
-            Ball ball = new Ball(colorFrame.get(ballID - 1).getColor(),
-                    ballID,
-                    colorFrame.get(ballID - 1).getANSI_COLOR());
-            ballID++;
+            Ball ball = new Ball(color,
+                    ballArray.size(),
+                    ansi);
+            ballArray.add(ball);
             ball.relocate(400, 400);
             platformAddBall(ball);
             while (ball.isGame()) {
@@ -76,15 +80,20 @@ public class BallPane extends Pane {
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
+                System.out.println("Move - " + ball.getBallId());
                 move(ball);
                 ball.increaseAmountMove();
             }
         });
+        if(color == Color.RED){
+            thread.setPriority(6);
+        }
         thread.start();
     }
 
     /**
      * Add ball to platform
+     *
      * @param ball
      */
     private void platformAddBall(Ball ball) {
@@ -97,9 +106,9 @@ public class BallPane extends Pane {
      */
     public void printBallMove() {
         ballArray.forEach(e ->
-                System.out.println(colorFrame.get(e.getBallId() - 1).getANSI_COLOR()
+                System.out.println(e.getAnsiColor()
                         + e.getBallId()
-                        + colorFrame.getAnsiReset()
+                        + ColorFrame.getAnsiReset()
                         + " -> "
                         + e.getAmountMove())
         );
@@ -126,6 +135,7 @@ public class BallPane extends Pane {
         for (int i = 0; i < rectangle.length; i++) {
             if (ball.getBoundsInParent().intersects(rectangle[i].getBoundsInParent())) {
                 Platform.runLater(() -> {
+                    System.out.println("recapture with rectangle");
                     removeBall(ball);
                 });
                 return;
@@ -139,8 +149,8 @@ public class BallPane extends Pane {
      * @param ball ball to remove
      */
     private void removeBall(Ball ball) {
+        ball.setGame(false);
         this.getChildren().remove(ball);
-        ballArray.remove(ball);
     }
 
     /**

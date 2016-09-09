@@ -42,7 +42,39 @@ public class ColorFrame  extends ArrayList<ColorFrame>{
         return ANSI_COLOR;
     }
 
-    public String getAnsiReset() {
+    public static String getAnsiReset() {
         return ANSI_RESET;
+    }
+
+    public static String getAnsiBlack() {
+        return ANSI_BLACK;
+    }
+
+    public static String getAnsiRed() {
+        return ANSI_RED;
+    }
+
+    public static String getAnsiGreen() {
+        return ANSI_GREEN;
+    }
+
+    public static String getAnsiYellow() {
+        return ANSI_YELLOW;
+    }
+
+    public static String getAnsiBlue() {
+        return ANSI_BLUE;
+    }
+
+    public static String getAnsiPurple() {
+        return ANSI_PURPLE;
+    }
+
+    public static String getAnsiCyan() {
+        return ANSI_CYAN;
+    }
+
+    public static String getAnsiWhite() {
+        return ANSI_WHITE;
     }
 }
